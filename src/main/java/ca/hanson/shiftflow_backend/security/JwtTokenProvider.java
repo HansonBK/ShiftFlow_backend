@@ -1,6 +1,8 @@
 package ca.hanson.shiftflow_backend.security;
 
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -43,6 +45,51 @@ public class JwtTokenProvider {
     }
 
 
+    public boolean validateToken(String token) {
+
+        try{
+
+            Jwts.parserBuilder()
+                    .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)))
+                    .build()
+                    .parseClaimsJws(token);
+
+            return true;
+
+        }catch(JwtException | IllegalArgumentException e){
+
+            return false;
+        }
+
+
+
+    }
+
+
+    public String getEmailFromToken(String token) {
+
+        Claims claims = getClaimsFromToken(token);
+
+        return claims.getSubject();
+    }
+
+
+    public String getRoleFromToken(String token) {
+
+        Claims claims = getClaimsFromToken(token);
+
+        return claims.get("role", String.class);
+    }
+
+    private  Claims getClaimsFromToken(String token) {
+
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8)))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims;
+    }
 
 
 
