@@ -4,6 +4,7 @@ import ca.hanson.shiftflow_backend.security.JwtAuthenticationFilter;
 import ca.hanson.shiftflow_backend.security.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -37,12 +38,29 @@ public class SecurityConfig {
                 .httpBasic(Customizer.withDefaults())
 
 
+
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/login").permitAll()
-                        .anyRequest().permitAll()
+
+                        .requestMatchers(HttpMethod.POST,"/api/auth/login").permitAll()
+
+                        .requestMatchers(HttpMethod.GET,"/api/auth/me").authenticated()
+                        .requestMatchers(HttpMethod.GET,"/api/schedule").authenticated()
+
+                        .requestMatchers(HttpMethod.POST, "/api/admin/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/admin/users").hasRole("ADMIN")
+
+                        .requestMatchers(HttpMethod.POST, "/api/shifts").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/api/shifts/*").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/api/shifts/*").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/shifts/*").hasRole("MANAGER")
+
+
+                        .anyRequest().denyAll()
                 )
 
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+
+
 
 
 
