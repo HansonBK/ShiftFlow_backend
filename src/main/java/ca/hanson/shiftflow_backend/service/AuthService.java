@@ -2,12 +2,14 @@ package ca.hanson.shiftflow_backend.service;
 
 import ca.hanson.shiftflow_backend.dto.LoginRequest;
 import ca.hanson.shiftflow_backend.dto.LoginResponse;
+import ca.hanson.shiftflow_backend.dto.MeResponse;
 import ca.hanson.shiftflow_backend.entitiy.User;
 import ca.hanson.shiftflow_backend.repo.UserRepository;
 import ca.hanson.shiftflow_backend.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -35,7 +37,9 @@ public class AuthService {
 
     public LoginResponse login(LoginRequest loginRequest) {
 
-        User user  =userRepository.findByEmail(loginRequest.email());
+        User user = userRepository.findByEmail(loginRequest.email())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
 
 
         if(user == null) {
@@ -60,6 +64,29 @@ public class AuthService {
 
 
 
+    }
+
+
+    public MeResponse getMe(Authentication authentication) {
+
+        if (authentication == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        String email = (String) authentication.getPrincipal();
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User not found"
+                ));
+
+        return new MeResponse(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getRole().name()
+        );
     }
 
 
