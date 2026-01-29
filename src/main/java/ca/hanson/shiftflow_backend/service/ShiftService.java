@@ -92,4 +92,31 @@ public class ShiftService {
         return new UserSummaryResponse(user.getId(), user.getFirstName(), user.getLastName());
     }
 
+
+
+
+    public void deleteShift(Long id, Authentication authentication) {
+
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        String managerEmail = (String) authentication.getPrincipal();
+
+        Shift shift = shiftRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Shift not found"
+                ));
+
+
+        if (!shift.getCreatedBy().getEmail().equals(managerEmail)) {
+            throw new ResponseStatusException(
+                    HttpStatus.FORBIDDEN, "You are not allowed to delete this shift"
+            );
+        }
+
+        shiftRepository.delete(shift);
+    }
+
+
 }
