@@ -3,6 +3,7 @@ package ca.hanson.shiftflow_backend.controller;
 
 import ca.hanson.shiftflow_backend.dto.CreateShiftRequest;
 import ca.hanson.shiftflow_backend.dto.ShiftResponse;
+import ca.hanson.shiftflow_backend.dto.UpdateShiftRequest;
 import ca.hanson.shiftflow_backend.service.ShiftService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,15 @@ public class ShiftController {
     public ResponseEntity<Void> deleteShift(@PathVariable Long id, Authentication authentication) {
         shiftService.deleteShift(id, authentication);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ShiftResponse> updateShift(@PathVariable Long id, @RequestBody UpdateShiftRequest request, Authentication authentication){
+
+        ShiftResponse response = shiftService.updateShift(id, request, authentication);
+
+        return ResponseEntity.ok(response);
+
     }
 
 }

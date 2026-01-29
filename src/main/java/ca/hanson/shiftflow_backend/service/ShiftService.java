@@ -2,6 +2,7 @@ package ca.hanson.shiftflow_backend.service;
 
 import ca.hanson.shiftflow_backend.dto.CreateShiftRequest;
 import ca.hanson.shiftflow_backend.dto.ShiftResponse;
+import ca.hanson.shiftflow_backend.dto.UpdateShiftRequest;
 import ca.hanson.shiftflow_backend.dto.UserSummaryResponse;
 import ca.hanson.shiftflow_backend.entitiy.Shift;
 import ca.hanson.shiftflow_backend.entitiy.User;
@@ -12,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 public class ShiftService {
@@ -117,6 +121,58 @@ public class ShiftService {
 
         shiftRepository.delete(shift);
     }
+
+
+    public ShiftResponse updateShift(Long id, UpdateShiftRequest request, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        if(request == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "request cannot be empty");
+        }
+        String managerEmail = (String) authentication.getPrincipal();
+
+        Shift shift = shiftRepository.findById(id)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shift not found"));
+
+        if(shift.getCreatedBy() == null || !shift.getCreatedBy().getEmail().equals(managerEmail)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN , "You are not allowed to update this shift");
+        }
+
+        LocalDateTime newStartTime = (request.startTime() != null) ? request.startTime() : shift.getStartTime();
+        LocalDateTime newEndTime = (request.endTime() != null) ? request.endTime() : shift.getEndTime();
+
+        if(newStartTime == null || newEndTime == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "start time or end time cannot be empty");
+        }
+        if(!newStartTime.isBefore(newEndTime)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "start time must be before end time");
+        }
+        shift.setStartTime(newStartTime);
+        shift.setEndTime(newEndTime);
+
+        if(request.position() != null) shift.setPosition(request.position());
+        if(request.location() != null) shift.setLocation(request.location());
+
+        boolean wantClear = Boolean.TRUE.equals(request.clearAssignedEmployee());
+        boolean wantAssignedEmployee = request.assignedEmployeeId() != null;
+
+        if(wantClear && wantAssignedEmployee) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "cannot assign and clear assigned employee at the same time");
+        }
+        if(wantClear) {
+            shift.setAssignedEmployee(null);
+
+        }else if(wantAssignedEmployee) {
+            User employee = userRepository.findById(request.assignedEmployeeId())
+                    .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
+            shift.setAssignedEmployee(employee);
+        }
+        Shift saved = shiftRepository.save(shift);
+        return  toShiftResponse(saved);
+
+    }
+
 
 
 }
