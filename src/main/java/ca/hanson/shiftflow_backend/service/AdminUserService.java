@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Service
@@ -70,5 +71,11 @@ public class AdminUserService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
         userRepository.deleteById(id);
+    }
+
+    public List<User> getAllUsers() {
+
+
+        return userRepository.findAll();
     }
 }
