@@ -1,6 +1,6 @@
 package ca.hanson.shiftflow_backend.repo;
 
-import ca.hanson.shiftflow_backend.entitiy.User;
+import ca.hanson.shiftflow_backend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

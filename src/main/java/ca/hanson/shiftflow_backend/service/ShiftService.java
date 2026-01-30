@@ -4,8 +4,8 @@ import ca.hanson.shiftflow_backend.dto.CreateShiftRequest;
 import ca.hanson.shiftflow_backend.dto.ShiftResponse;
 import ca.hanson.shiftflow_backend.dto.UpdateShiftRequest;
 import ca.hanson.shiftflow_backend.dto.UserSummaryResponse;
-import ca.hanson.shiftflow_backend.entitiy.Shift;
-import ca.hanson.shiftflow_backend.entitiy.User;
+import ca.hanson.shiftflow_backend.entity.Shift;
+import ca.hanson.shiftflow_backend.entity.User;
 import ca.hanson.shiftflow_backend.repo.ShiftRepository;
 import ca.hanson.shiftflow_backend.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
