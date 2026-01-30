@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/shifts")
 public class ShiftController {
@@ -46,6 +48,12 @@ public class ShiftController {
 
     }
 
+
+    @GetMapping("/all")
+    public ResponseEntity<List<ShiftResponse>> getAllShifts(Authentication authentication) {
+        List<ShiftResponse> shifts = shiftService.getShifts(authentication);
+        return ResponseEntity.ok(shifts);
+    }
 
 
 }

@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class ShiftService {
@@ -171,6 +172,20 @@ public class ShiftService {
         Shift saved = shiftRepository.save(shift);
         return  toShiftResponse(saved);
 
+    }
+
+    public List<ShiftResponse> getShifts(Authentication authentication) {
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getPrincipal() == null
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        return shiftRepository.findAll()
+                .stream()
+                .map(this::toShiftResponse)
+                .toList();
     }
 
 
