@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController()
 @RequestMapping("/api/admin/users")
 public class AdminUserController {
@@ -30,6 +32,12 @@ public class AdminUserController {
         adminUserService.deleteUser(id);
         return ResponseEntity.noContent().build();
 
+    }
+
+    @GetMapping()
+    public List<User> getAllUsers() {
+
+        return adminUserService.getAllUsers();
     }
 
 }
