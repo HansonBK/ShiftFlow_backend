@@ -22,4 +22,17 @@ public interface ShiftRepository extends JpaRepository<Shift, Long> {
 
     List<Shift> findByAssignedEmployeeEmailOrderByStartTimeAsc(String email);
 
+    boolean existsByAssignedEmployeeIdAndStartTimeLessThanAndEndTimeGreaterThan(
+            Long assignedEmployeeId,
+            java.time.LocalDateTime newEndTime,
+            java.time.LocalDateTime newStartTime
+    );
+
+    boolean existsByAssignedEmployeeIdAndIdNotAndStartTimeLessThanAndEndTimeGreaterThan(
+            Long assignedEmployeeId,
+            Long id,
+            java.time.LocalDateTime newEndTime,
+            java.time.LocalDateTime newStartTime
+    );
+
 }

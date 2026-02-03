@@ -13,12 +13,21 @@
           "request": {
             "method": "POST",
             "header": [
-              {"key": "Content-Type", "value": "application/json"}
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -42,12 +51,21 @@
           "request": {
             "method": "POST",
             "header": [
-              {"key": "Content-Type", "value": "application/json"}
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -71,12 +89,21 @@
           "request": {
             "method": "POST",
             "header": [
-              {"key": "Content-Type", "value": "application/json"}
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/auth/login",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "login"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -100,12 +127,21 @@
           "request": {
             "method": "GET",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{adminToken}}"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/auth/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "auth", "me"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
             }
           }
         }
@@ -119,13 +155,25 @@
           "request": {
             "method": "POST",
             "header": [
-              {"key": "Content-Type", "value": "application/json"},
-              {"key": "Authorization", "value": "Bearer {{adminToken}}"}
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/admin/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "users"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -149,13 +197,25 @@
           "request": {
             "method": "POST",
             "header": [
-              {"key": "Content-Type", "value": "application/json"},
-              {"key": "Authorization", "value": "Bearer {{adminToken}}"}
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/admin/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "users"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -179,12 +239,21 @@
           "request": {
             "method": "GET",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{adminToken}}"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/admin/users",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "users"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users"
+              ]
             }
           }
         },
@@ -193,12 +262,22 @@
           "request": {
             "method": "DELETE",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{adminToken}}"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/admin/users/{{employeeId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "admin", "users", "{{employeeId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "admin",
+                "users",
+                "{{employeeId}}"
+              ]
             }
           }
         }
@@ -212,13 +291,24 @@
           "request": {
             "method": "POST",
             "header": [
-              {"key": "Content-Type", "value": "application/json"},
-              {"key": "Authorization", "value": "Bearer {{managerToken}}"}
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerToken}}"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/shifts",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "shifts"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "shifts"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -238,17 +328,71 @@
           ]
         },
         {
+          "name": "Create Overlap Shift (Manager)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/shifts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "shifts"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"startTime\": \"2026-02-04T12:00:00\",\n  \"endTime\": \"2026-02-04T18:00:00\",\n  \"position\": \"Cashier\",\n  \"location\": \"Store A\",\n  \"assignedEmployeeId\": {{employeeId}}\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Expect overlap conflict', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
           "name": "Update Shift (Manager)",
           "request": {
             "method": "PUT",
             "header": [
-              {"key": "Content-Type", "value": "application/json"},
-              {"key": "Authorization", "value": "Bearer {{managerToken}}"}
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerToken}}"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/shifts/{{shiftId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "shifts", "{{shiftId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "shifts",
+                "{{shiftId}}"
+              ]
             },
             "body": {
               "mode": "raw",
@@ -261,12 +405,21 @@
           "request": {
             "method": "GET",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{managerToken}}"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerToken}}"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/shifts/all",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "shifts", "all"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "shifts",
+                "all"
+              ]
             }
           }
         },
@@ -275,12 +428,22 @@
           "request": {
             "method": "GET",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{managerToken}}"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerToken}}"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/shifts/employee/{{employeeId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "shifts", "employee", "{{employeeId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "shifts",
+                "employee",
+                "{{employeeId}}"
+              ]
             }
           }
         },
@@ -289,12 +452,21 @@
           "request": {
             "method": "GET",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{employeeToken}}"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employeeToken}}"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/shifts/me",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "shifts", "me"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "shifts",
+                "me"
+              ]
             }
           }
         },
@@ -303,12 +475,21 @@
           "request": {
             "method": "DELETE",
             "header": [
-              {"key": "Authorization", "value": "Bearer {{managerToken}}"}
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerToken}}"
+              }
             ],
             "url": {
               "raw": "{{baseUrl}}/api/shifts/{{shiftId}}",
-              "host": ["{{baseUrl}}"],
-              "path": ["api", "shifts", "{{shiftId}}"]
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "shifts",
+                "{{shiftId}}"
+              ]
             }
           }
         }

@@ -62,6 +62,10 @@ public class ShiftService {
 
         }
 
+        if (assignedEmployee != null) {
+            ensureNoOverlap(assignedEmployee.getId(), request.startTime(), request.endTime(), null);
+        }
+
         Shift shift = new Shift();
         shift.setStartTime(request.startTime());
         shift.setEndTime(request.endTime());
@@ -167,7 +171,10 @@ public class ShiftService {
         }else if(wantAssignedEmployee) {
             User employee = userRepository.findById(request.assignedEmployeeId())
                     .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
+            ensureNoOverlap(employee.getId(), newStartTime, newEndTime, shift.getId());
             shift.setAssignedEmployee(employee);
+        } else if (shift.getAssignedEmployee() != null) {
+            ensureNoOverlap(shift.getAssignedEmployee().getId(), newStartTime, newEndTime, shift.getId());
         }
         Shift saved = shiftRepository.save(shift);
         return  toShiftResponse(saved);
@@ -228,6 +235,25 @@ public class ShiftService {
                 .stream()
                 .map(this::toShiftResponse)
                 .toList();
+    }
+
+    private void ensureNoOverlap(Long employeeId, LocalDateTime startTime, LocalDateTime endTime, Long excludeShiftId) {
+        if (employeeId == null || startTime == null || endTime == null) {
+            return;
+        }
+
+        boolean exists = (excludeShiftId == null)
+                ? shiftRepository.existsByAssignedEmployeeIdAndStartTimeLessThanAndEndTimeGreaterThan(
+                        employeeId, endTime, startTime)
+                : shiftRepository.existsByAssignedEmployeeIdAndIdNotAndStartTimeLessThanAndEndTimeGreaterThan(
+                        employeeId, excludeShiftId, endTime, startTime);
+
+        if (exists) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Employee already has a shift that overlaps this time range"
+            );
+        }
     }
 
 
