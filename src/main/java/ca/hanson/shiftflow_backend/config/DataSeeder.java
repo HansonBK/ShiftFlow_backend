@@ -28,7 +28,7 @@ public class DataSeeder implements CommandLineRunner {
 
         String adminEmail = "admin@shiftflow.com";
 
-        if(userRepository.findByEmail(adminEmail) != null){
+        if(userRepository.findByEmail(adminEmail).isPresent()){
             return;
         }
         User admin = new User();
