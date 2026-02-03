@@ -55,5 +55,20 @@ public class ShiftController {
         return ResponseEntity.ok(shifts);
     }
 
+    @GetMapping("/employee/{employeeId}")
+    public ResponseEntity<List<ShiftResponse>> getShiftsForEmployee(
+            @PathVariable Long employeeId,
+            Authentication authentication
+    ) {
+        List<ShiftResponse> shifts = shiftService.getShiftsForEmployee(employeeId, authentication);
+        return ResponseEntity.ok(shifts);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<ShiftResponse>> getMyShifts(Authentication authentication) {
+        List<ShiftResponse> shifts = shiftService.getMyShifts(authentication);
+        return ResponseEntity.ok(shifts);
+    }
+
 
 }

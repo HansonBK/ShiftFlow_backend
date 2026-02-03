@@ -188,6 +188,48 @@ public class ShiftService {
                 .toList();
     }
 
+    public List<ShiftResponse> getShiftsForEmployee(Long employeeId, Authentication authentication) {
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getPrincipal() == null
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        if (employeeId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "employee id cannot be empty");
+        }
+
+        userRepository.findById(employeeId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
+
+        String managerEmail = (String) authentication.getPrincipal();
+
+        return shiftRepository.findByAssignedEmployeeIdAndCreatedByEmailOrderByStartTimeAsc(
+                        employeeId,
+                        managerEmail
+                )
+                .stream()
+                .map(this::toShiftResponse)
+                .toList();
+    }
+
+    public List<ShiftResponse> getMyShifts(Authentication authentication) {
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getPrincipal() == null
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        String email = (String) authentication.getPrincipal();
+
+        return shiftRepository.findByAssignedEmployeeEmailOrderByStartTimeAsc(email)
+                .stream()
+                .map(this::toShiftResponse)
+                .toList();
+    }
+
 
 
 }
