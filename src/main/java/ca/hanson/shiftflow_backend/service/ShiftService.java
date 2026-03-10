@@ -256,6 +256,10 @@ public class ShiftService {
         }
     }
 
+    public void validateNoOverlap(Long employeeId, LocalDateTime startTime, LocalDateTime endTime, Long excludeShiftId) {
+        ensureNoOverlap(employeeId, startTime, endTime, excludeShiftId);
+    }
+
 
 
 }
