@@ -172,6 +172,88 @@ public class ShiftService {
 
     }
 
+<<<<<<< HEAD
+=======
+    public List<ShiftResponse> getShifts(Authentication authentication) {
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getPrincipal() == null
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        return shiftRepository.findAll()
+                .stream()
+                .map(this::toShiftResponse)
+                .toList();
+    }
+
+    public List<ShiftResponse> getShiftsForEmployee(Long employeeId, Authentication authentication) {
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getPrincipal() == null
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        if (employeeId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "employee id cannot be empty");
+        }
+
+        userRepository.findById(employeeId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
+
+        String managerEmail = (String) authentication.getPrincipal();
+
+        return shiftRepository.findByAssignedEmployeeIdAndCreatedByEmailOrderByStartTimeAsc(
+                        employeeId,
+                        managerEmail
+                )
+                .stream()
+                .map(this::toShiftResponse)
+                .toList();
+    }
+
+    public List<ShiftResponse> getMyShifts(Authentication authentication) {
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getPrincipal() == null
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        String email = (String) authentication.getPrincipal();
+
+        return shiftRepository.findByAssignedEmployeeEmailOrderByStartTimeAsc(email)
+                .stream()
+                .map(this::toShiftResponse)
+                .toList();
+    }
+
+    private void ensureNoOverlap(Long employeeId, LocalDateTime startTime, LocalDateTime endTime, Long excludeShiftId) {
+        if (employeeId == null || startTime == null || endTime == null) {
+            return;
+        }
+
+        boolean exists = (excludeShiftId == null)
+                ? shiftRepository.existsByAssignedEmployeeIdAndStartTimeLessThanAndEndTimeGreaterThan(
+                        employeeId, endTime, startTime)
+                : shiftRepository.existsByAssignedEmployeeIdAndIdNotAndStartTimeLessThanAndEndTimeGreaterThan(
+                        employeeId, excludeShiftId, endTime, startTime);
+
+        if (exists) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Employee already has a shift that overlaps this time range"
+            );
+        }
+    }
+
+    public void validateNoOverlap(Long employeeId, LocalDateTime startTime, LocalDateTime endTime, Long excludeShiftId) {
+        ensureNoOverlap(employeeId, startTime, endTime, excludeShiftId);
+    }
+
+>>>>>>> 8dbccb2 (add swap func)
 
 
 }

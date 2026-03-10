@@ -56,6 +56,12 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/shifts/*").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.DELETE, "/api/shifts/*").hasRole("MANAGER")
 
+                        .requestMatchers(HttpMethod.POST, "/api/swap-requests").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.GET, "/api/swap-requests/inbox").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.GET, "/api/swap-requests/sent").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.PUT, "/api/swap-requests/*/accept").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.PUT, "/api/swap-requests/*/decline").hasRole("EMPLOYEE")
+
 
                         .anyRequest().denyAll()
                 )
