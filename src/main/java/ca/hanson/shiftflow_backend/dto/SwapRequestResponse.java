@@ -1,6 +1,6 @@
 package ca.hanson.shiftflow_backend.dto;
 
-import ca.hanson.shiftflow_backend.entitiy.SwapRequestStatus;
+import ca.hanson.shiftflow_backend.entity.SwapRequestStatus;
 
 import java.time.LocalDateTime;
 

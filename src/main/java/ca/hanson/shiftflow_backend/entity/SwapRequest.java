@@ -1,4 +1,4 @@
-package ca.hanson.shiftflow_backend.entitiy;
+package ca.hanson.shiftflow_backend.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

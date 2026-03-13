@@ -1,4 +1,4 @@
-package ca.hanson.shiftflow_backend.entitiy;
+package ca.hanson.shiftflow_backend.entity;
 
 public enum SwapRequestStatus {
     PENDING,
