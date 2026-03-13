@@ -62,6 +62,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/swap-requests/*/accept").hasRole("EMPLOYEE")
                         .requestMatchers(HttpMethod.PUT, "/api/swap-requests/*/decline").hasRole("EMPLOYEE")
 
+                        .requestMatchers(HttpMethod.POST, "/api/open-shifts").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.GET, "/api/open-shifts").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/open-shifts/me").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.PUT, "/api/open-shifts/*/cancel").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.PUT, "/api/open-shifts/*/claim").hasRole("EMPLOYEE")
+
+                        .requestMatchers(HttpMethod.PUT, "/api/password/change").authenticated()
+
 
                         .anyRequest().denyAll()
                 )
