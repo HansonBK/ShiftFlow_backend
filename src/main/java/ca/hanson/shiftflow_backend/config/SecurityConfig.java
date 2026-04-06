@@ -41,7 +41,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(Customizer.withDefaults())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(form -> form.disable())
@@ -58,16 +58,30 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET,"/api/admin/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/admin/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/admin/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/admin/users/**").hasRole("ADMIN")
 
 
+                        .requestMatchers(HttpMethod.POST, "/api/shifts").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/api/shifts/*").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/api/shifts/all").hasAnyRole("ADMIN", "MANAGER")
                         .requestMatchers(HttpMethod.GET, "/api/shifts/me").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/shifts/employee/*").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/api/shifts/all").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.POST, "/api/shifts").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.PUT, "/api/shifts/*").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/api/shifts/*").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/shifts/*").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/api/shifts/employee/*").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/shifts/*").hasAnyRole("ADMIN", "MANAGER")
+
+                        .requestMatchers(HttpMethod.POST, "/api/swap-requests").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.GET, "/api/swap-requests/inbox").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.GET, "/api/swap-requests/sent").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.PUT, "/api/swap-requests/*/accept").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.PUT, "/api/swap-requests/*/decline").hasRole("EMPLOYEE")
+
+                        .requestMatchers(HttpMethod.POST, "/api/open-shifts").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.GET, "/api/open-shifts").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/open-shifts/me").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.PUT, "/api/open-shifts/*/cancel").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.PUT, "/api/open-shifts/*/claim").hasRole("EMPLOYEE")
+
+                        .requestMatchers(HttpMethod.PUT, "/api/password/change").authenticated()
 
 
                         .anyRequest().denyAll()
@@ -87,7 +101,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(allowedOrigins.split(",")));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+        config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
