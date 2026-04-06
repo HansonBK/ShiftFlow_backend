@@ -1,6 +1,7 @@
 package ca.hanson.shiftflow_backend.service;
 
 import ca.hanson.shiftflow_backend.dto.CreateUserRequest;
+import ca.hanson.shiftflow_backend.dto.UpdateUserRequest;
 import ca.hanson.shiftflow_backend.entity.Role;
 import ca.hanson.shiftflow_backend.entity.User;
 import ca.hanson.shiftflow_backend.repo.UserRepository;
@@ -64,6 +65,25 @@ public class AdminUserService {
         return userRepository.save(user);
 
 
+    }
+
+    public User updateUser(Long id, UpdateUserRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        if (request.firstName() != null && !request.firstName().isBlank())
+            user.setFirstName(request.firstName());
+        if (request.lastName() != null && !request.lastName().isBlank())
+            user.setLastName(request.lastName());
+        if (request.role() != null && !request.role().isBlank()) {
+            try {
+                user.setRole(Role.valueOf(request.role().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid role");
+            }
+        }
+
+        return userRepository.save(user);
     }
 
     public void deleteUser(Long id) {

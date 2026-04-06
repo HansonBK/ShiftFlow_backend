@@ -11,6 +11,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -32,6 +37,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(form -> form.disable())
@@ -48,13 +54,16 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.GET,"/api/admin/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/api/admin/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/admin/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/admin/users/**").hasRole("ADMIN")
 
 
-                        .requestMatchers(HttpMethod.POST, "/api/shifts").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.PUT, "/api/shifts/*").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/api/shifts/*").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.DELETE, "/api/shifts/*").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.POST, "/api/shifts").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers(HttpMethod.PUT, "/api/shifts/*").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/api/shifts/all").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/api/shifts/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/shifts/employee/*").hasAnyRole("ADMIN", "MANAGER")
+                        .requestMatchers(HttpMethod.DELETE, "/api/shifts/*").hasAnyRole("ADMIN", "MANAGER")
 
                         .requestMatchers(HttpMethod.POST, "/api/swap-requests").hasRole("EMPLOYEE")
                         .requestMatchers(HttpMethod.GET, "/api/swap-requests/inbox").hasRole("EMPLOYEE")
@@ -81,5 +90,18 @@ public class SecurityConfig {
 
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of("http://localhost:4000", "http://localhost:8081", "http://localhost:3000"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 }
