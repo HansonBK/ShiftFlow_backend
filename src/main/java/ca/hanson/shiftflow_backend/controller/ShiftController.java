@@ -48,6 +48,7 @@ public class ShiftController {
 
     }
 
+
     @GetMapping("/all")
     public ResponseEntity<List<ShiftResponse>> getAllShifts(Authentication authentication) {
         List<ShiftResponse> shifts = shiftService.getShifts(authentication);
@@ -68,5 +69,6 @@ public class ShiftController {
         List<ShiftResponse> shifts = shiftService.getMyShifts(authentication);
         return ResponseEntity.ok(shifts);
     }
+
 
 }

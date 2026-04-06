@@ -12,6 +12,10 @@ import java.util.List;
 @Repository
 public interface ShiftRepository extends JpaRepository<Shift, Long> {
 
+    List<Shift> findByAssignedEmployeeId(Long assignedEmployeeId);
+
+    List<Shift> findByAssignedEmployeeEmail(String email);
+
     List<Shift> findByAssignedEmployeeIdAndCreatedByEmailOrderByStartTimeAsc(Long assignedEmployeeId, String createdByEmail);
 
     List<Shift> findByAssignedEmployeeEmailOrderByStartTimeAsc(String email);

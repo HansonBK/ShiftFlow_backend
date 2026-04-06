@@ -4,6 +4,7 @@ import ca.hanson.shiftflow_backend.security.JwtAuthenticationFilter;
 import ca.hanson.shiftflow_backend.security.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,9 +24,12 @@ public class SecurityConfig {
 
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final String allowedOrigins;
 
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider,
+                          @Value("${app.cors.allowed-origins:http://localhost:3000}") String allowedOrigins) {
         this.jwtTokenProvider = jwtTokenProvider;
+        this.allowedOrigins = allowedOrigins;
     }
 
     @Bean
@@ -95,7 +99,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4000", "http://localhost:8081", "http://localhost:3000"));
+        config.setAllowedOrigins(List.of(allowedOrigins.split(",")));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
