@@ -1,8 +1,7 @@
 package ca.hanson.shiftflow_backend.controller;
 
 import ca.hanson.shiftflow_backend.dto.CreateUserRequest;
-import ca.hanson.shiftflow_backend.dto.UpdateUserRequest;
-import ca.hanson.shiftflow_backend.entity.User;
+import ca.hanson.shiftflow_backend.entitiy.User;
 import ca.hanson.shiftflow_backend.service.AdminUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,12 +24,6 @@ public class AdminUserController {
 
         User created = adminUserService.createUser(request);
         return new ResponseEntity<>(created, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request) {
-        User updated = adminUserService.updateUser(id, request);
-        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")

@@ -3,15 +3,19 @@ package ca.hanson.shiftflow_backend.service;
 import ca.hanson.shiftflow_backend.dto.LoginRequest;
 import ca.hanson.shiftflow_backend.dto.LoginResponse;
 import ca.hanson.shiftflow_backend.dto.MeResponse;
-import ca.hanson.shiftflow_backend.entity.User;
+import ca.hanson.shiftflow_backend.entitiy.User;
 import ca.hanson.shiftflow_backend.repo.UserRepository;
 import ca.hanson.shiftflow_backend.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.function.EntityResponse;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Service
 public class AuthService {

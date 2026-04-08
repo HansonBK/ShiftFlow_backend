@@ -1,11 +1,13 @@
 package ca.hanson.shiftflow_backend.service;
 
+import ca.hanson.shiftflow_backend.dto.AvailabilityResponse;
 import ca.hanson.shiftflow_backend.dto.CreateShiftRequest;
 import ca.hanson.shiftflow_backend.dto.ShiftResponse;
 import ca.hanson.shiftflow_backend.dto.UpdateShiftRequest;
 import ca.hanson.shiftflow_backend.dto.UserSummaryResponse;
-import ca.hanson.shiftflow_backend.entity.Shift;
-import ca.hanson.shiftflow_backend.entity.User;
+import ca.hanson.shiftflow_backend.entitiy.Role;
+import ca.hanson.shiftflow_backend.entitiy.Shift;
+import ca.hanson.shiftflow_backend.entitiy.User;
 import ca.hanson.shiftflow_backend.repo.ShiftRepository;
 import ca.hanson.shiftflow_backend.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,31 +35,31 @@ public class ShiftService {
     public ShiftResponse createShift(CreateShiftRequest request, Authentication authentication) {
 
 
-        if (authentication == null || !authentication.isAuthenticated()) {
+        if(authentication == null || !authentication.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
-        if (request == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "request cannot be empty");
+        if(request == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "request cannot be empty");
         }
 
-        if (request.startTime() == null || request.endTime() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "start time or end time cannot be empty");
+        if(request.startTime()==null || request.endTime()==null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "start time or end time cannot be empty");
         }
 
-        if (!request.startTime().isBefore(request.endTime())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "start time must be before end time");
+        if(!request.startTime().isBefore(request.endTime())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "start time must be before end time");
         }
 
         String managerEmail = (String) authentication.getPrincipal();
 
         User manager = userRepository.findByEmail(managerEmail)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Manager user not found"));
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Manager user not found"));
 
         User assignedEmployee = null;
-        if (request.assignedEmployeeId() != null) {
+        if(request.assignedEmployeeId() != null){
             assignedEmployee = userRepository.findById(request.assignedEmployeeId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
+                    .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
 
         }
 
@@ -75,7 +77,9 @@ public class ShiftService {
 
         Shift saved = shiftRepository.save(shift);
 
-        return toShiftResponse(saved);
+        return  toShiftResponse(saved);
+
+
 
 
     }
@@ -97,6 +101,8 @@ public class ShiftService {
         if (user == null) return null;
         return new UserSummaryResponse(user.getId(), user.getFirstName(), user.getLastName());
     }
+
+
 
 
     public void deleteShift(Long id, Authentication authentication) {
@@ -127,52 +133,52 @@ public class ShiftService {
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
-        if (request == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "request cannot be empty");
+        if(request == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "request cannot be empty");
         }
         String managerEmail = (String) authentication.getPrincipal();
 
         Shift shift = shiftRepository.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shift not found"));
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shift not found"));
 
-        if (shift.getCreatedBy() == null || !shift.getCreatedBy().getEmail().equals(managerEmail)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You are not allowed to update this shift");
+        if(shift.getCreatedBy() == null || !shift.getCreatedBy().getEmail().equals(managerEmail)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN , "You are not allowed to update this shift");
         }
 
         LocalDateTime newStartTime = (request.startTime() != null) ? request.startTime() : shift.getStartTime();
         LocalDateTime newEndTime = (request.endTime() != null) ? request.endTime() : shift.getEndTime();
 
-        if (newStartTime == null || newEndTime == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "start time or end time cannot be empty");
+        if(newStartTime == null || newEndTime == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "start time or end time cannot be empty");
         }
-        if (!newStartTime.isBefore(newEndTime)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "start time must be before end time");
+        if(!newStartTime.isBefore(newEndTime)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "start time must be before end time");
         }
         shift.setStartTime(newStartTime);
         shift.setEndTime(newEndTime);
 
-        if (request.position() != null) shift.setPosition(request.position());
-        if (request.location() != null) shift.setLocation(request.location());
+        if(request.position() != null) shift.setPosition(request.position());
+        if(request.location() != null) shift.setLocation(request.location());
 
         boolean wantClear = Boolean.TRUE.equals(request.clearAssignedEmployee());
         boolean wantAssignedEmployee = request.assignedEmployeeId() != null;
 
-        if (wantClear && wantAssignedEmployee) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "cannot assign and clear assigned employee at the same time");
+        if(wantClear && wantAssignedEmployee) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST , "cannot assign and clear assigned employee at the same time");
         }
-        if (wantClear) {
+        if(wantClear) {
             shift.setAssignedEmployee(null);
 
-        } else if (wantAssignedEmployee) {
+        }else if(wantAssignedEmployee) {
             User employee = userRepository.findById(request.assignedEmployeeId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
+                    .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
             ensureNoOverlap(employee.getId(), newStartTime, newEndTime, shift.getId());
             shift.setAssignedEmployee(employee);
         } else if (shift.getAssignedEmployee() != null) {
             ensureNoOverlap(shift.getAssignedEmployee().getId(), newStartTime, newEndTime, shift.getId());
         }
         Shift saved = shiftRepository.save(shift);
-        return toShiftResponse(saved);
+        return  toShiftResponse(saved);
 
     }
 
@@ -232,6 +238,59 @@ public class ShiftService {
                 .toList();
     }
 
+    public AvailabilityResponse checkAvailability(Long employeeId,
+                                                  LocalDateTime startTime,
+                                                  LocalDateTime endTime,
+                                                  Authentication authentication) {
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getPrincipal() == null
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        if (employeeId == null || startTime == null || endTime == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "employee id, start time, and end time are required");
+        }
+        if (!startTime.isBefore(endTime)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "start time must be before end time");
+        }
+
+        userRepository.findById(employeeId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
+
+        boolean overlap = shiftRepository.existsByAssignedEmployeeIdAndStartTimeLessThanAndEndTimeGreaterThan(
+                employeeId, endTime, startTime
+        );
+
+        return new AvailabilityResponse(employeeId, !overlap);
+    }
+
+    public List<UserSummaryResponse> getAvailableEmployees(LocalDateTime startTime,
+                                                           LocalDateTime endTime,
+                                                           Authentication authentication) {
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getPrincipal() == null
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        if (startTime == null || endTime == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "start time and end time are required");
+        }
+        if (!startTime.isBefore(endTime)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "start time must be before end time");
+        }
+
+        return userRepository.findByRole(Role.EMPLOYEE)
+                .stream()
+                .filter(user -> !shiftRepository.existsByAssignedEmployeeIdAndStartTimeLessThanAndEndTimeGreaterThan(
+                        user.getId(), endTime, startTime
+                ))
+                .map(this::toUserSummary)
+                .toList();
+    }
+
     private void ensureNoOverlap(Long employeeId, LocalDateTime startTime, LocalDateTime endTime, Long excludeShiftId) {
         if (employeeId == null || startTime == null || endTime == null) {
             return;
@@ -239,9 +298,9 @@ public class ShiftService {
 
         boolean exists = (excludeShiftId == null)
                 ? shiftRepository.existsByAssignedEmployeeIdAndStartTimeLessThanAndEndTimeGreaterThan(
-                employeeId, endTime, startTime)
+                        employeeId, endTime, startTime)
                 : shiftRepository.existsByAssignedEmployeeIdAndIdNotAndStartTimeLessThanAndEndTimeGreaterThan(
-                employeeId, excludeShiftId, endTime, startTime);
+                        employeeId, excludeShiftId, endTime, startTime);
 
         if (exists) {
             throw new ResponseStatusException(
@@ -251,9 +310,6 @@ public class ShiftService {
         }
     }
 
-    public void validateNoOverlap(Long employeeId, LocalDateTime startTime, LocalDateTime endTime, Long excludeShiftId) {
-        ensureNoOverlap(employeeId, startTime, endTime, excludeShiftId);
-    }
 
 
 }
