@@ -1,7 +1,7 @@
 package ca.hanson.shiftflow_backend.config;
 
-import ca.hanson.shiftflow_backend.entitiy.Role;
-import ca.hanson.shiftflow_backend.entitiy.User;
+import ca.hanson.shiftflow_backend.entity.Role;
+import ca.hanson.shiftflow_backend.entity.User;
 import ca.hanson.shiftflow_backend.repo.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;

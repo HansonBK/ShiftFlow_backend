@@ -3,7 +3,7 @@ package ca.hanson.shiftflow_backend.service;
 import ca.hanson.shiftflow_backend.dto.LoginRequest;
 import ca.hanson.shiftflow_backend.dto.LoginResponse;
 import ca.hanson.shiftflow_backend.dto.MeResponse;
-import ca.hanson.shiftflow_backend.entitiy.User;
+import ca.hanson.shiftflow_backend.entity.User;
 import ca.hanson.shiftflow_backend.repo.UserRepository;
 import ca.hanson.shiftflow_backend.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;

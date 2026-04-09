@@ -1,7 +1,7 @@
 package ca.hanson.shiftflow_backend.controller;
 
 import ca.hanson.shiftflow_backend.dto.CreateUserRequest;
-import ca.hanson.shiftflow_backend.entitiy.User;
+import ca.hanson.shiftflow_backend.entity.User;
 import ca.hanson.shiftflow_backend.service.AdminUserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

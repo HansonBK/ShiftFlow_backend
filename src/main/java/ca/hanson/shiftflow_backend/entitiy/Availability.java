@@ -1,5 +1,6 @@
 package ca.hanson.shiftflow_backend.entitiy;
 
+import ca.hanson.shiftflow_backend.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
