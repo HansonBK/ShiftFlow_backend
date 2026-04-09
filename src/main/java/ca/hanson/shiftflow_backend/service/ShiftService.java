@@ -1,9 +1,11 @@
 package ca.hanson.shiftflow_backend.service;
 
+import ca.hanson.shiftflow_backend.dto.AvailabilityResponse;
 import ca.hanson.shiftflow_backend.dto.CreateShiftRequest;
 import ca.hanson.shiftflow_backend.dto.ShiftResponse;
 import ca.hanson.shiftflow_backend.dto.UpdateShiftRequest;
 import ca.hanson.shiftflow_backend.dto.UserSummaryResponse;
+import ca.hanson.shiftflow_backend.entitiy.Role;
 import ca.hanson.shiftflow_backend.entitiy.Shift;
 import ca.hanson.shiftflow_backend.entitiy.User;
 import ca.hanson.shiftflow_backend.repo.ShiftRepository;
@@ -14,7 +16,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -234,6 +235,59 @@ public class ShiftService {
         return shiftRepository.findByAssignedEmployeeEmailOrderByStartTimeAsc(email)
                 .stream()
                 .map(this::toShiftResponse)
+                .toList();
+    }
+
+    public AvailabilityResponse checkAvailability(Long employeeId,
+                                                  LocalDateTime startTime,
+                                                  LocalDateTime endTime,
+                                                  Authentication authentication) {
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getPrincipal() == null
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        if (employeeId == null || startTime == null || endTime == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "employee id, start time, and end time are required");
+        }
+        if (!startTime.isBefore(endTime)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "start time must be before end time");
+        }
+
+        userRepository.findById(employeeId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Employee not found"));
+
+        boolean overlap = shiftRepository.existsByAssignedEmployeeIdAndStartTimeLessThanAndEndTimeGreaterThan(
+                employeeId, endTime, startTime
+        );
+
+        return new AvailabilityResponse(employeeId, !overlap);
+    }
+
+    public List<UserSummaryResponse> getAvailableEmployees(LocalDateTime startTime,
+                                                           LocalDateTime endTime,
+                                                           Authentication authentication) {
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getPrincipal() == null
+                || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+        if (startTime == null || endTime == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "start time and end time are required");
+        }
+        if (!startTime.isBefore(endTime)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "start time must be before end time");
+        }
+
+        return userRepository.findByRole(Role.EMPLOYEE)
+                .stream()
+                .filter(user -> !shiftRepository.existsByAssignedEmployeeIdAndStartTimeLessThanAndEndTimeGreaterThan(
+                        user.getId(), endTime, startTime
+                ))
+                .map(this::toUserSummary)
                 .toList();
     }
 

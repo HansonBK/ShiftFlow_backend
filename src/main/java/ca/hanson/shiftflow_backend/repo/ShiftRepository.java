@@ -1,12 +1,11 @@
 package ca.hanson.shiftflow_backend.repo;
 
 import ca.hanson.shiftflow_backend.entitiy.Shift;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
-
 
 @Repository
 public interface ShiftRepository extends JpaRepository<Shift, Long> {
@@ -24,15 +23,15 @@ public interface ShiftRepository extends JpaRepository<Shift, Long> {
 
     boolean existsByAssignedEmployeeIdAndStartTimeLessThanAndEndTimeGreaterThan(
             Long assignedEmployeeId,
-            java.time.LocalDateTime newEndTime,
-            java.time.LocalDateTime newStartTime
+            LocalDateTime newEndTime,
+            LocalDateTime newStartTime
     );
 
     boolean existsByAssignedEmployeeIdAndIdNotAndStartTimeLessThanAndEndTimeGreaterThan(
             Long assignedEmployeeId,
             Long id,
-            java.time.LocalDateTime newEndTime,
-            java.time.LocalDateTime newStartTime
+            LocalDateTime newEndTime,
+            LocalDateTime newStartTime
     );
 
 }

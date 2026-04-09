@@ -1,6 +1,6 @@
 {
   "info": {
-    "_postman_id": "9b8e9a66-1ef0-4ed6-9c28-c4f6a2c8a3bf",
+    "_postman_id": "f4b3b86e-2f8e-4c63-9c6d-6d62a5c1f8d8",
     "name": "ShiftFlow Backend",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
@@ -39,6 +39,7 @@
               "listen": "test",
               "script": {
                 "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
                   "const json = pm.response.json();",
                   "if (json && json.token) pm.environment.set('adminToken', json.token);"
                 ]
@@ -77,6 +78,7 @@
               "listen": "test",
               "script": {
                 "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
                   "const json = pm.response.json();",
                   "if (json && json.token) pm.environment.set('managerToken', json.token);"
                 ]
@@ -115,6 +117,7 @@
               "listen": "test",
               "script": {
                 "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
                   "const json = pm.response.json();",
                   "if (json && json.token) pm.environment.set('employeeToken', json.token);"
                 ]
@@ -143,7 +146,17 @@
                 "me"
               ]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
@@ -185,6 +198,7 @@
               "listen": "test",
               "script": {
                 "exec": [
+                  "pm.test('Status 201', function () { pm.response.to.have.status(201); });",
                   "const json = pm.response.json();",
                   "if (json && json.id) pm.environment.set('managerId', json.id);"
                 ]
@@ -227,6 +241,7 @@
               "listen": "test",
               "script": {
                 "exec": [
+                  "pm.test('Status 201', function () { pm.response.to.have.status(201); });",
                   "const json = pm.response.json();",
                   "if (json && json.id) pm.environment.set('employeeId', json.id);"
                 ]
@@ -255,7 +270,17 @@
                 "users"
               ]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Delete User",
@@ -279,7 +304,17 @@
                 "{{employeeId}}"
               ]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
         }
       ]
     },
@@ -312,7 +347,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"startTime\": \"2026-02-04T09:00:00\",\n  \"endTime\": \"2026-02-04T17:00:00\",\n  \"position\": \"Cashier\",\n  \"location\": \"Store A\",\n  \"assignedEmployeeId\": {{employeeId}}\n}"
+              "raw": "{\n  \"startTime\": \"{{shiftStart}}\",\n  \"endTime\": \"{{shiftEnd}}\",\n  \"position\": \"Cashier\",\n  \"location\": \"Store A\",\n  \"assignedEmployeeId\": {{employeeId}}\n}"
             }
           },
           "event": [
@@ -320,6 +355,7 @@
               "listen": "test",
               "script": {
                 "exec": [
+                  "pm.test('Status 201', function () { pm.response.to.have.status(201); });",
                   "const json = pm.response.json();",
                   "if (json && json.id) pm.environment.set('shiftId', json.id);"
                 ]
@@ -353,7 +389,7 @@
             },
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"startTime\": \"2026-02-04T12:00:00\",\n  \"endTime\": \"2026-02-04T18:00:00\",\n  \"position\": \"Cashier\",\n  \"location\": \"Store A\",\n  \"assignedEmployeeId\": {{employeeId}}\n}"
+              "raw": "{\n  \"startTime\": \"{{overlapStart}}\",\n  \"endTime\": \"{{overlapEnd}}\",\n  \"position\": \"Cashier\",\n  \"location\": \"Store A\",\n  \"assignedEmployeeId\": {{employeeId}}\n}"
             }
           },
           "event": [
@@ -361,9 +397,7 @@
               "listen": "test",
               "script": {
                 "exec": [
-                  "pm.test('Expect overlap conflict', function () {",
-                  "    pm.response.to.have.status(409);",
-                  "});"
+                  "pm.test('Status 409', function () { pm.response.to.have.status(409); });"
                 ]
               }
             }
@@ -398,7 +432,17 @@
               "mode": "raw",
               "raw": "{\n  \"position\": \"Front Desk\",\n  \"location\": \"Store A\"\n}"
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Get All Shifts (Manager)",
@@ -421,7 +465,17 @@
                 "all"
               ]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Get Shifts For Employee (Manager)",
@@ -445,7 +499,17 @@
                 "{{employeeId}}"
               ]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Get My Shifts (Employee)",
@@ -468,7 +532,17 @@
                 "me"
               ]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
         },
         {
           "name": "Delete Shift (Manager)",
@@ -491,7 +565,343 @@
                 "{{shiftId}}"
               ]
             }
-          }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Shift Availability",
+      "item": [
+        {
+          "name": "Check Availability (Manager)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/shifts/availability?employeeId={{employeeId}}&startTime={{availabilityStart}}&endTime={{availabilityEnd}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "shifts",
+                "availability"
+              ],
+              "query": [
+                {
+                  "key": "employeeId",
+                  "value": "{{employeeId}}"
+                },
+                {
+                  "key": "startTime",
+                  "value": "{{availabilityStart}}"
+                },
+                {
+                  "key": "endTime",
+                  "value": "{{availabilityEnd}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.test('Has availability', function () { pm.expect(json).to.have.property('available'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Available Employees (Manager)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/shifts/availability/available-employees?startTime={{availabilityStart}}&endTime={{availabilityEnd}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "shifts",
+                "availability",
+                "available-employees"
+              ],
+              "query": [
+                {
+                  "key": "startTime",
+                  "value": "{{availabilityStart}}"
+                },
+                {
+                  "key": "endTime",
+                  "value": "{{availabilityEnd}}"
+                }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Weekly Availability",
+      "item": [
+        {
+          "name": "Create Availability (Employee)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employeeToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/availability",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "availability"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dayOfWeek\": \"{{availabilityDay}}\",\n  \"startTime\": \"{{availabilityStartTime}}\",\n  \"endTime\": \"{{availabilityEndTime}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 201', function () { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "if (json && json.id) pm.environment.set('availabilityId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Overlap Availability (Employee)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employeeToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/availability",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "availability"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dayOfWeek\": \"{{availabilityDay}}\",\n  \"startTime\": \"{{availabilityOverlapStartTime}}\",\n  \"endTime\": \"{{availabilityOverlapEndTime}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 409', function () { pm.response.to.have.status(409); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Availability (Employee)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employeeToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/availability/{{availabilityId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "availability",
+                "{{availabilityId}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"dayOfWeek\": \"{{availabilityDay}}\",\n  \"startTime\": \"{{availabilityUpdateStartTime}}\",\n  \"endTime\": \"{{availabilityUpdateEndTime}}\"\n}"
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get My Availability (Employee)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employeeToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/availability/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "availability",
+                "me"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Availability For Employee (Manager)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{managerToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/availability/employee/{{employeeId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "availability",
+                "employee",
+                "{{employeeId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 200', function () { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Availability (Employee)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{employeeToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/availability/{{availabilityId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "availability",
+                "{{availabilityId}}"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status 204', function () { pm.response.to.have.status(204); });"
+                ]
+              }
+            }
+          ]
         }
       ]
     }

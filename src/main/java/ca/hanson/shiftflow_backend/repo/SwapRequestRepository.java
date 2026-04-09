@@ -1,7 +1,7 @@
 package ca.hanson.shiftflow_backend.repo;
 
-import ca.hanson.shiftflow_backend.entitiy.SwapRequest;
-import ca.hanson.shiftflow_backend.entitiy.SwapRequestStatus;
+import ca.hanson.shiftflow_backend.entity.SwapRequest;
+import ca.hanson.shiftflow_backend.entity.SwapRequestStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
