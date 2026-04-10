@@ -9,12 +9,15 @@ import ca.hanson.shiftflow_backend.dto.UserSummaryResponse;
 import ca.hanson.shiftflow_backend.entity.Role;
 import ca.hanson.shiftflow_backend.entity.Shift;
 import ca.hanson.shiftflow_backend.entity.User;
+import ca.hanson.shiftflow_backend.repo.OpenShiftOfferRepository;
 import ca.hanson.shiftflow_backend.repo.ShiftRepository;
+import ca.hanson.shiftflow_backend.repo.SwapRequestRepository;
 import ca.hanson.shiftflow_backend.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -25,11 +28,17 @@ public class ShiftService {
 
     private final ShiftRepository shiftRepository;
     private final UserRepository userRepository;
+    private final SwapRequestRepository swapRequestRepository;
+    private final OpenShiftOfferRepository openShiftOfferRepository;
 
     @Autowired
-    public ShiftService(ShiftRepository shiftRepository, UserRepository userRepository) {
+    public ShiftService(ShiftRepository shiftRepository, UserRepository userRepository,
+                        SwapRequestRepository swapRequestRepository,
+                        OpenShiftOfferRepository openShiftOfferRepository) {
         this.shiftRepository = shiftRepository;
         this.userRepository = userRepository;
+        this.swapRequestRepository = swapRequestRepository;
+        this.openShiftOfferRepository = openShiftOfferRepository;
     }
 
 
@@ -106,6 +115,7 @@ public class ShiftService {
 
 
 
+    @Transactional
     public void deleteShift(Long id, Authentication authentication) {
 
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -120,12 +130,9 @@ public class ShiftService {
                 ));
 
 
-        if (!shift.getCreatedBy().getEmail().equals(managerEmail)) {
-            throw new ResponseStatusException(
-                    HttpStatus.FORBIDDEN, "You are not allowed to delete this shift"
-            );
-        }
-
+        swapRequestRepository.deleteByRequesterShiftId(id);
+        swapRequestRepository.deleteByTargetShiftId(id);
+        openShiftOfferRepository.deleteByShiftId(id);
         shiftRepository.delete(shift);
     }
 
