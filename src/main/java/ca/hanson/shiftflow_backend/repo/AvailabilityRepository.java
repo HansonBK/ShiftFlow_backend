@@ -1,6 +1,6 @@
 package ca.hanson.shiftflow_backend.repo;
 
-import ca.hanson.shiftflow_backend.entitiy.Availability;
+import ca.hanson.shiftflow_backend.entity.Availability;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

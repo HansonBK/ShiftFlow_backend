@@ -31,6 +31,11 @@ public class SwapRequestController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @GetMapping("/all")
+    public ResponseEntity<List<SwapRequestResponse>> getAll(Authentication authentication) {
+        return ResponseEntity.ok(swapRequestService.getAll(authentication));
+    }
+
     @GetMapping("/inbox")
     public ResponseEntity<List<SwapRequestResponse>> getInbox(Authentication authentication) {
         return ResponseEntity.ok(swapRequestService.getInbox(authentication));
@@ -55,5 +60,21 @@ public class SwapRequestController {
             Authentication authentication
     ) {
         return ResponseEntity.ok(swapRequestService.decline(id, authentication));
+    }
+
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<SwapRequestResponse> approve(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(swapRequestService.approve(id, authentication));
+    }
+
+    @PutMapping("/{id}/reject")
+    public ResponseEntity<SwapRequestResponse> reject(
+            @PathVariable Long id,
+            Authentication authentication
+    ) {
+        return ResponseEntity.ok(swapRequestService.reject(id, authentication));
     }
 }

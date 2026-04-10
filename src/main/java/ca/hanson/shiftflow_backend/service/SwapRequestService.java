@@ -184,6 +184,64 @@ public class SwapRequestService {
         return toResponse(saved);
     }
 
+    public SwapRequestResponse approve(Long requestId, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        SwapRequest swapRequest = swapRequestRepository.findById(requestId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Swap request not found"));
+
+        if (swapRequest.getStatus() != SwapRequestStatus.ACCEPTED_BY_TARGET) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only accepted requests can be approved");
+        }
+
+        User requester = swapRequest.getRequester();
+        User targetUser = swapRequest.getTargetUser();
+        Shift requesterShift = swapRequest.getRequesterShift();
+        Shift targetShift = swapRequest.getTargetShift();
+
+        requesterShift.setAssignedEmployee(targetUser);
+        targetShift.setAssignedEmployee(requester);
+
+        shiftRepository.save(requesterShift);
+        shiftRepository.save(targetShift);
+
+        swapRequest.setStatus(SwapRequestStatus.APPROVED);
+        swapRequest.setRespondedAt(LocalDateTime.now());
+
+        return toResponse(swapRequestRepository.save(swapRequest));
+    }
+
+    public SwapRequestResponse reject(Long requestId, Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        SwapRequest swapRequest = swapRequestRepository.findById(requestId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Swap request not found"));
+
+        if (swapRequest.getStatus() != SwapRequestStatus.ACCEPTED_BY_TARGET) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only accepted requests can be rejected");
+        }
+
+        swapRequest.setStatus(SwapRequestStatus.REJECTED);
+        swapRequest.setRespondedAt(LocalDateTime.now());
+
+        return toResponse(swapRequestRepository.save(swapRequest));
+    }
+
+    public List<SwapRequestResponse> getAll(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        return swapRequestRepository.findAll()
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
     private SwapRequestResponse toResponse(SwapRequest swapRequest) {
         return new SwapRequestResponse(
                 swapRequest.getId(),

@@ -5,7 +5,6 @@ import ca.hanson.shiftflow_backend.security.JwtTokenProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -20,7 +19,6 @@ import java.util.List;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -45,7 +43,6 @@ public class SecurityConfig {
         return source;
     }
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -53,22 +50,18 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(form -> form.disable())
-                .httpBasic(Customizer.withDefaults())
-
-
 
                 .authorizeHttpRequests(auth -> auth
 
-                        .requestMatchers(HttpMethod.POST,"/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
 
-                        .requestMatchers(HttpMethod.GET,"/api/auth/me").authenticated()
-                        .requestMatchers(HttpMethod.GET,"/api/schedule").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/schedule").authenticated()
 
-                        .requestMatchers(HttpMethod.GET,"/api/admin/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/admin/users").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/admin/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/admin/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/admin/users/**").hasRole("ADMIN")
-
 
                         .requestMatchers(HttpMethod.POST, "/api/availability").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/availability/*").authenticated()
@@ -76,10 +69,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/availability/me").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/availability/employee/*").hasAnyRole("MANAGER", "ADMIN")
 
-
                         .requestMatchers(HttpMethod.GET, "/api/shifts/me").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/shifts/employee/*").hasRole("MANAGER")
-                        .requestMatchers(HttpMethod.GET, "/api/shifts/all").hasRole("MANAGER")
+                        .requestMatchers(HttpMethod.GET, "/api/shifts/all").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/shifts/availability/**").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.POST, "/api/shifts").hasRole("MANAGER")
                         .requestMatchers(HttpMethod.PUT, "/api/shifts/*").hasRole("MANAGER")
@@ -87,10 +79,13 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/api/shifts/*").hasRole("MANAGER")
 
                         .requestMatchers(HttpMethod.POST, "/api/swap-requests").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.GET, "/api/swap-requests/all").hasAnyRole("MANAGER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/swap-requests/inbox").hasRole("EMPLOYEE")
                         .requestMatchers(HttpMethod.GET, "/api/swap-requests/sent").hasRole("EMPLOYEE")
                         .requestMatchers(HttpMethod.PUT, "/api/swap-requests/*/accept").hasRole("EMPLOYEE")
                         .requestMatchers(HttpMethod.PUT, "/api/swap-requests/*/decline").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.PUT, "/api/swap-requests/*/approve").hasAnyRole("MANAGER", "ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/swap-requests/*/reject").hasAnyRole("MANAGER", "ADMIN")
 
                         .requestMatchers(HttpMethod.POST, "/api/open-shifts").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/open-shifts").authenticated()
@@ -104,10 +99,6 @@ public class SecurityConfig {
                 )
 
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-
-
-
-
 
         return http.build();
     }

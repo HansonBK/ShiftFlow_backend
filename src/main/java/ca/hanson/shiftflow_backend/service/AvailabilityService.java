@@ -3,7 +3,7 @@ package ca.hanson.shiftflow_backend.service;
 import ca.hanson.shiftflow_backend.dto.AvailabilityRequest;
 import ca.hanson.shiftflow_backend.dto.AvailabilitySlotResponse;
 import ca.hanson.shiftflow_backend.dto.UserSummaryResponse;
-import ca.hanson.shiftflow_backend.entitiy.Availability;
+import ca.hanson.shiftflow_backend.entity.Availability;
 import ca.hanson.shiftflow_backend.entity.Role;
 import ca.hanson.shiftflow_backend.entity.User;
 import ca.hanson.shiftflow_backend.repo.AvailabilityRepository;
