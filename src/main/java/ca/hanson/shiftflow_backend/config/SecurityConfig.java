@@ -58,7 +58,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/auth/me").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/schedule").authenticated()
 
-                        .requestMatchers(HttpMethod.GET, "/api/admin/users").authenticated()
+                        .requestMatchers(HttpMethod.GET,"/api/admin/users").hasAnyRole("ADMIN", "MANAGER")
                         .requestMatchers(HttpMethod.POST, "/api/admin/users").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/admin/users/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/admin/users/**").hasRole("ADMIN")
@@ -67,7 +67,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/availability/*").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/availability/*").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/availability/me").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/availability/employee/*").hasAnyRole("MANAGER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/availability/employee/*").hasRole("MANAGER")
 
                         .requestMatchers(HttpMethod.GET, "/api/shifts/me").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/shifts/employee/*").hasRole("MANAGER")

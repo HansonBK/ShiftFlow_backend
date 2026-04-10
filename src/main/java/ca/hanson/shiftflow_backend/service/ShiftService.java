@@ -1,6 +1,7 @@
 package ca.hanson.shiftflow_backend.service;
 
-import ca.hanson.shiftflow_backend.dto.AvailabilityResponse;
+import ca.hanson.shiftflow_backend.dto.AvailabilityResponse
+        ;
 import ca.hanson.shiftflow_backend.dto.CreateShiftRequest;
 import ca.hanson.shiftflow_backend.dto.ShiftResponse;
 import ca.hanson.shiftflow_backend.dto.UpdateShiftRequest;
@@ -31,8 +32,7 @@ public class ShiftService {
     private final OpenShiftOfferRepository openShiftOfferRepository;
 
     @Autowired
-    public ShiftService(ShiftRepository shiftRepository,
-                        UserRepository userRepository,
+    public ShiftService(ShiftRepository shiftRepository, UserRepository userRepository,
                         SwapRequestRepository swapRequestRepository,
                         OpenShiftOfferRepository openShiftOfferRepository) {
         this.shiftRepository = shiftRepository;
@@ -104,6 +104,9 @@ public class ShiftService {
         return new UserSummaryResponse(user.getId(), user.getFirstName(), user.getLastName());
     }
 
+
+
+
     @Transactional
     public void deleteShift(Long id, Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -119,9 +122,9 @@ public class ShiftService {
         swapRequestRepository.deleteByRequesterShiftId(id);
         swapRequestRepository.deleteByTargetShiftId(id);
 
-        // Delete related open shift offers
+        swapRequestRepository.deleteByRequesterShiftId(id);
+        swapRequestRepository.deleteByTargetShiftId(id);
         openShiftOfferRepository.deleteByShiftId(id);
-
         shiftRepository.delete(shift);
     }
 
