@@ -1,6 +1,7 @@
 package ca.hanson.shiftflow_backend.service;
 
-import ca.hanson.shiftflow_backend.dto.AvailabilityResponse;
+import ca.hanson.shiftflow_backend.dto.AvailabilityResponse
+        ;
 import ca.hanson.shiftflow_backend.dto.CreateShiftRequest;
 import ca.hanson.shiftflow_backend.dto.ShiftResponse;
 import ca.hanson.shiftflow_backend.dto.UpdateShiftRequest;
