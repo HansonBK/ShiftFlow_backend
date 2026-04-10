@@ -16,4 +16,6 @@ public interface OpenShiftOfferRepository extends JpaRepository<OpenShiftOffer, 
     List<OpenShiftOffer> findByCreatedByEmailOrderByCreatedAtDesc(String email);
 
     boolean existsByShiftIdAndStatusIn(Long shiftId, Collection<OpenShiftStatus> statuses);
+
+    void deleteByShiftId(Long shiftId);
 }

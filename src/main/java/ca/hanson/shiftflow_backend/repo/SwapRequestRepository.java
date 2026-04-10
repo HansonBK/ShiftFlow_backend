@@ -18,4 +18,8 @@ public interface SwapRequestRepository extends JpaRepository<SwapRequest, Long> 
     boolean existsByRequesterShiftIdAndStatusIn(Long requesterShiftId, Collection<SwapRequestStatus> statuses);
 
     boolean existsByTargetShiftIdAndStatusIn(Long targetShiftId, Collection<SwapRequestStatus> statuses);
+
+    void deleteByRequesterShiftId(Long shiftId);
+
+    void deleteByTargetShiftId(Long shiftId);
 }
