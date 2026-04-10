@@ -1,13 +1,8 @@
 package ca.hanson.shiftflow_backend.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "swap_requests")
 public class SwapRequest {
@@ -42,7 +37,21 @@ public class SwapRequest {
     private LocalDateTime respondedAt;
 
     @PrePersist
-    public void onCreate() {
-        this.createdAt = LocalDateTime.now();
-    }
+    public void onCreate() { this.createdAt = LocalDateTime.now(); }
+
+    public Long getId() { return id; }
+    public User getRequester() { return requester; }
+    public User getTargetUser() { return targetUser; }
+    public Shift getRequesterShift() { return requesterShift; }
+    public Shift getTargetShift() { return targetShift; }
+    public SwapRequestStatus getStatus() { return status; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getRespondedAt() { return respondedAt; }
+
+    public void setRequester(User requester) { this.requester = requester; }
+    public void setTargetUser(User targetUser) { this.targetUser = targetUser; }
+    public void setRequesterShift(Shift requesterShift) { this.requesterShift = requesterShift; }
+    public void setTargetShift(Shift targetShift) { this.targetShift = targetShift; }
+    public void setStatus(SwapRequestStatus status) { this.status = status; }
+    public void setRespondedAt(LocalDateTime respondedAt) { this.respondedAt = respondedAt; }
 }

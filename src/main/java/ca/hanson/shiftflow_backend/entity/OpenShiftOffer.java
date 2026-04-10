@@ -1,13 +1,8 @@
 package ca.hanson.shiftflow_backend.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "open_shift_offers")
 public class OpenShiftOffer {
@@ -38,13 +33,21 @@ public class OpenShiftOffer {
     private LocalDateTime updatedAt;
 
     @PrePersist
-    public void onCreate() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
-    }
+    public void onCreate() { this.createdAt = LocalDateTime.now(); this.updatedAt = LocalDateTime.now(); }
 
     @PreUpdate
-    public void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
-    }
+    public void onUpdate() { this.updatedAt = LocalDateTime.now(); }
+
+    public Long getId() { return id; }
+    public Shift getShift() { return shift; }
+    public User getCreatedBy() { return createdBy; }
+    public User getClaimedBy() { return claimedBy; }
+    public OpenShiftStatus getStatus() { return status; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+
+    public void setShift(Shift shift) { this.shift = shift; }
+    public void setCreatedBy(User createdBy) { this.createdBy = createdBy; }
+    public void setClaimedBy(User claimedBy) { this.claimedBy = claimedBy; }
+    public void setStatus(OpenShiftStatus status) { this.status = status; }
 }
